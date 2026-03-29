@@ -8,7 +8,26 @@ router.post('/api/v1/authors', (req, res) => {
 
 //2 GET    /api/v1/authors
 router.get('/api/v1/authors', (req, res) => {
-    res.send('List of authors')
+    //all authors
+    let result = authors;
+
+    // search by lastName
+    const lastNameQuery = (req.query.lastName || '').toLowerCase();
+    if (lastNameQuery) {
+        result = result.filter(author =>
+            author.lastName.toLowerCase().includes(lastNameQuery)
+        );
+    }
+
+    // search by nationality
+    const nationalityQuery = (req.query.nationality || '').toLowerCase();
+    if (nationalityQuery) {
+        result = result.filter(author =>
+            author.nationality.toLowerCase().includes(nationalityQuery)
+        );
+    }
+
+    res.send(result);
 });
 
 //3 GET    /api/v1/authors/:id

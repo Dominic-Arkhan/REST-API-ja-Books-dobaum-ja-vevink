@@ -8,7 +8,26 @@ router.post('/api/v1/publishers', (req, res) => {
 
 //2 GET    /api/v1/publishers
 router.get('/api/v1/publishers', (req, res) => {
-    res.send('List of publishers')
+    //all publishers
+    let result = publishers;
+
+    // search by name
+    const nameQuery = (req.query.name || '').toLowerCase();
+    if (nameQuery) {
+        result = result.filter(publisher =>
+            publisher.name.toLowerCase().includes(nameQuery)
+        );
+    }
+
+    // search by country
+    const countryQuery = (req.query.country || '').toLowerCase();
+    if (countryQuery) {
+        result = result.filter(publisher =>
+            publisher.country.toLowerCase().includes(countryQuery)
+        );
+    }
+
+    res.send(result);
 });
 
 //3 GET    /api/v1/publishers/:id
