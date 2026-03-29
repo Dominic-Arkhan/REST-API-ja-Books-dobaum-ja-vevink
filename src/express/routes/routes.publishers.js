@@ -1,13 +1,14 @@
 const express = require('express');
 const router = express.Router();
+const { validate, validateParams, validateQuery, createPublisherSchema, updatePublisherSchema, publisherIdSchema, publisherQuerySchema } = require('../validators/publisher.validator');
 
 //1 POST   /api/v1/publishers
-router.post('/api/v1/publishers', (req, res) => {
+router.post('/api/v1/publishers', validate(createPublisherSchema), (req, res) => {
     res.send('Create publishers')
 });
 
 //2 GET    /api/v1/publishers
-router.get('/api/v1/publishers', (req, res) => {
+router.get('/api/v1/publishers', validateQuery(publisherQuerySchema), (req, res) => {
     //all publishers
     let result = publishers;
 
@@ -31,19 +32,19 @@ router.get('/api/v1/publishers', (req, res) => {
 });
 
 //3 GET    /api/v1/publishers/:id
-router.get('/api/v1/publishers/:id', (req, res) => {
+router.get('/api/v1/publishers/:id', validateParams(publisherIdSchema), (req, res) => {
     const publisherId = req.params.id;
     res.send(`Details of publisher ${publisherId}`);
 })
 
 //4 PUT    /api/v1/publishers/:id
-router.put('/api/v1/publishers/:id', (req, res) => {
+router.put('/api/v1/publishers/:id', validateParams(publisherIdSchema), validate(updatePublisherSchema), (req, res) => {
     const publisherId = req.params.id;
     res.send(`Update publisher ${publisherId}`);
 })
 
 //5 DELETE /api/v1/publishers/:id
-router.delete('/api/v1/publishers/:id', (req, res) => {
+router.delete('/api/v1/publishers/:id', validateParams(publisherIdSchema), (req, res) => {
     const publisherId = req.params.id;
     res.send(`Delete publisher ${publisherId}`);
 })
