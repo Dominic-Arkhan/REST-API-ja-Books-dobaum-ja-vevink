@@ -9,7 +9,12 @@ selgelt kirjeldatud endpoint'ide loetelu koos näidispäringute ja vastustega
    - `git clone https://github.com/Dominic-Arkhan/REST-API-ja-Books-dobaum-ja-vevink.git`
 2. Install dependencies
    - `npm install`
-3. Start server
+3. Generate Prisma Client + run migrations
+   - `npx prisma generate`
+   - `npx prisma migrate dev --name init`
+4. Seed DB
+   - `npm run prisma:seed`
+5. Start server
    - `npm start` (listens on `http://localhost:3000`)
 
 ## All Endpoints
