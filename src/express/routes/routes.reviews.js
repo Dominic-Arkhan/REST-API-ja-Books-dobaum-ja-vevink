@@ -10,7 +10,42 @@ router.post('/api/v1/books/:bookId/reviews', (req, res) => {
 //2 GET    /api/v1/books/:bookId/reviews
 router.get('/api/v1/books/:bookId/reviews', (req, res) => {
     const bookId = req.params.bookId;
-    res.send(`List of reviews for book ${bookId}`);
+
+    let result = reviews.filter(review => String(review.bookId) === String(bookId));
+
+    // search by reviewer
+    const reviewerQuery = (req.query.reviewer || '').toLowerCase();
+    if (reviewerQuery) {
+        result = result.filter(review =>
+            review.reviewer.toLowerCase().includes(reviewerQuery)
+        );
+    }
+
+    const sortBy = (req.query.sortBy || '').trim();
+    if (sortBy) {
+        // error if invalid sort field
+        if (sortBy !== 'createdAt') {
+            return res.status(400).json({ error: "Invalid sortBy. Allowed: createdAt" });
+        }
+
+        // sort order
+        const order = (req.query.order || 'desc').toLowerCase();
+        if (order !== 'asc' && order !== 'desc') {
+            return res.status(400).json({ error: "Invalid order. Allowed: asc, desc" });
+        }
+
+        // sorting logic
+        result = result.slice().sort((a, b) => {
+            const aValue = new Date(a[sortBy]).getTime();
+            const bValue = new Date(b[sortBy]).getTime();
+
+            if (aValue < bValue) return order === 'asc' ? -1 : 1;
+            if (aValue > bValue) return order === 'asc' ? 1 : -1;
+            return 0;
+        });
+    }
+
+    res.json(result);
 });
 
 //3 GET    /api/v1/reviews/:id
