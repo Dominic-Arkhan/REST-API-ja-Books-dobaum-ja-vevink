@@ -1,13 +1,14 @@
 const express = require('express');
 const router = express.Router();
+const { validate, validateParams, validateQuery, createBookSchema, updateBookSchema, bookIdSchema, bookQuerySchema } = require('../validators/book.validator');
 
 //POST   /api/v1/books
-router.post('/api/v1/books', (req, res) => {
+router.post('/api/v1/books', validate(createBookSchema), (req, res) => {
     res.send('Create books')
 });
 
 //GET    /api/v1/books
-router.get('/api/v1/books', (req, res) => {
+router.get('/api/v1/books', validateQuery(bookQuerySchema), (req, res) => {
     //all books
     if (!Array.isArray(books)) {
         return res.status(500).json({ error: 'Books data source is not configured' });
@@ -129,31 +130,31 @@ router.get('/api/v1/books', (req, res) => {
 });
 
 //GET    /api/v1/books/:id
-router.get('/api/v1/books/:id', (req, res) => {
+router.get('/api/v1/books/:id', validateParams(bookIdSchema), (req, res) => {
     const bookId = req.params.id;
     res.send(`Details of book ${bookId}`);
 })
 
 //PUT    /api/v1/books/:id
-router.put('/api/v1/books/:id', (req, res) => {
+router.put('/api/v1/books/:id', validateParams(bookIdSchema), validate(updateBookSchema), (req, res) => {
     const bookId = req.params.id;
     res.send(`Update book ${bookId}`);
 })
 
 //DELETE /api/v1/books/:id
-router.put('/api/v1/books/:id', (req, res) => {
+router.delete('/api/v1/books/:id', validateParams(bookIdSchema), (req, res) => {
     const bookId = req.params.id;
     res.send(`Delete book ${bookId}`);
 })
 
 //GET    /api/v1/books/:id/reviews
-router.get('/api/v1/books/:id/reviews', (req, res) => {
+router.get('/api/v1/books/:id/reviews', validateParams(bookIdSchema), (req, res) => {
     const bookId = req.params.id;
     res.send(`Reviews of book ${bookId}`);
 })
 
 //GET    /api/v1/books/:id/average-rating
-router.get('/api/v1/books/:id/average-rating', (req, res) => {
+router.get('/api/v1/books/:id/average-rating', validateParams(bookIdSchema), (req, res) => {
     const bookId = req.params.id;
     res.send(`Average rating of book ${bookId}`);
 })
